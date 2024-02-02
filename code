@@ -1,0 +1,143 @@
+<div class="page-width">
+  {% for block in section.blocks %}
+    <div class="modal-open" data-modal="modal-{{ forloop.index }}"> 
+      {% if block.settings.collection_img != blank %}
+            <img src="{{ block.settings.collection_img | img_url: "300x" }}">
+          {% endif %}
+    </div>
+
+    <!-- modals  -->
+    <div class="modal" id="modal-{{ forloop.index }}">
+        <div class="modal-content">
+            <span class="modal-close">&times;</span>
+            
+     
+            <ul class="modal-product">
+              {%- for product in block.settings.collection -%}
+                {% assign lazy_load = false %}
+            
+                <li>
+                    {% render 'card-product',
+                    card_product: product,
+                    media_aspect_ratio: section.settings.image_ratio,
+                    image_shape: section.settings.image_shape,
+                    show_secondary_image: section.settings.show_secondary_image,
+                    show_vendor: section.settings.show_vendor,
+                    show_rating: section.settings.show_rating,
+                    lazy_load: lazy_load,
+                    show_quick_add: section.settings.enable_quick_add,
+                    section_id: section.id
+                  %}
+                </li>
+              {%- endfor -%}
+            </ul>
+
+        </div>
+    </div>
+  
+  {% endfor %}
+</div>
+    
+    <style>
+      .modal-product{
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+        gap: 20px;
+        list-style: none;
+    }
+          .modal-content {
+          background-color: #fefefe;
+          margin: 5% auto;
+          padding: 20px;
+          border: 1px solid #888;
+          width: 80%;
+            border-radius: 8px;
+        }
+   div#shopify-section-template--22053511495956__custom_modal_collection_jPQBVt .page-width {
+    display: flex;
+    justify-content: space-between;
+     padding: 60px 0;
+} 
+      .modal{
+         display: none;
+       position: fixed; 
+      z-index: 2;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+       overflow: auto; 
+      background-color: rgba(0, 0, 0, 0.4);
+      padding-top: 60px;
+    }
+        .modal-close {
+          color: #aaa;
+          float: right;
+          font-size: 28px;
+          font-weight: bold;
+          cursor: pointer;
+        }
+
+      @media screen and (max-width: 767px) {
+          div#shopify-section-template--22053511495956__custom_modal_collection_jPQBVt .page-width {
+            display: block;
+        } 
+        .modal-product{
+          grid-template-columns: 1fr 1fr;
+        }
+        .modal-content{
+          padding: 0;
+          width: 90%;
+        }
+      }
+    </style>
+
+    
+    <script>
+        const modalBtns = document.querySelectorAll(".modal-open");
+        modalBtns.forEach(function(btn){
+            btn.onclick = function(){
+                let modal = btn.getAttribute('data-modal');
+                document.getElementById(modal).style.display = "block";
+            }
+        });
+
+        let closeBtns = document.querySelectorAll(".modal-close");
+
+        closeBtns.forEach(function(btn) {
+            btn.onclick = function() {
+                let modal = (btn.closest(".modal").style.display = "none")
+            }
+        })
+    </script>
+
+
+{% schema %}
+  {
+    "name": "Section name",
+    "settings": [],
+    "blocks": [
+      {
+        "type": "item",
+        "name": "item",
+        "settings": [
+          {
+            "type": "image_picker",
+            "label": "collection img",
+            "id": "collection_img"
+          },
+          {
+        "type": "product_list",
+        "id": "collection",
+        "label": "Collection"
+      }
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "custom-modal"
+      }
+    ]
+  }
+{% endschema %}
